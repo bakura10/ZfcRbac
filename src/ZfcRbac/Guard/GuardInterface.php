@@ -35,14 +35,14 @@ interface GuardInterface
     /**
      * Various constants for guard that can be added to the MVC event result
      */
-    const GUARD_AUTHORIZED    = 'guard-authorized';
-    const GUARD_UNAUTHORIZED  = 'guard-unauthorized';
+    const GUARD_AUTHORIZED = 'guard-authorized';
+    const GUARD_UNAUTHORIZED = 'guard-unauthorized';
     const GUARD_RUNTIME_ERROR = 'guard-runtime-error';
 
     /**
      * Protection policy constants
      */
-    const POLICY_DENY  = 'deny';
+    const POLICY_DENY = 'deny';
     const POLICY_ALLOW = 'allow';
 
     /**
@@ -50,4 +50,4 @@ interface GuardInterface
      * @return bool
      */
     public function isGranted(MvcEvent $event);
-} 
+}

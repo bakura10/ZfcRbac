@@ -60,7 +60,7 @@ abstract class AbstractGuard implements GuardInterface, ListenerAggregateInterfa
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'onRoute'), -1);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'onRoute'), -1000);
     }
 
     /**
@@ -132,4 +132,4 @@ abstract class AbstractGuard implements GuardInterface, ListenerAggregateInterfa
             $rbac->getRole($role)->addPermission($permission);
         }
     }
-} 
+}
