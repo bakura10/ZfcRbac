@@ -97,11 +97,13 @@ class RouteGuard extends AbstractGuard
         $permission   = null;
 
         foreach (array_keys($this->rules) as $routeRegex) {
+            // @todo: change this test to a more restrictive one.
+            // @todo: it must be compatible with a wilcard oriented API
             $result = preg_match('`' . $routeRegex . '`', $matchedRouteName);
 
             if (false === $result) {
                 throw new Exception\RuntimeException(sprintf(
-                    'Unable to test regex: "%s"',
+                    'Unable to match regex: "%s"',
                     $routeRegex
                 ));
             } elseif ($result) {

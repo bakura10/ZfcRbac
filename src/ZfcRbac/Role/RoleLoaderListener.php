@@ -50,7 +50,7 @@ class RoleLoaderListener extends AbstractListenerAggregate
         $sharedEventManager = $events->getSharedManager();
 
         $sharedEventManager->attach(
-            'ZfcRbac\Service\AuthorizationService',
+            'ZfcRbac',
             RbacEvent::EVENT_LOAD_ROLES,
             array($this, 'onLoadRoles')
         );
@@ -71,6 +71,7 @@ class RoleLoaderListener extends AbstractListenerAggregate
         $rbac  = $event->getRbac();
         $roles = $this->roleProvider->getRoles($event);
 
+        // @TODO: more comments for explaining why testing for $role integer
         foreach ($roles as $role => $parents) {
             if (is_int($role)) {
                 $rbac->addRole($parents);

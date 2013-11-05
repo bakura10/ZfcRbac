@@ -51,7 +51,7 @@ class PermissionLoaderListener extends AbstractListenerAggregate
         $sharedEventManager = $events->getSharedManager();
 
         $sharedEventManager->attach(
-            'ZfcRbac\Service\AuthorizationService',
+            'ZfcRbac',
             RbacEvent::EVENT_LOAD_PERMISSIONS,
             array($this, 'onLoadPermissions')
         );
