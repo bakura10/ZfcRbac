@@ -50,7 +50,7 @@ class RoleLoaderListener extends AbstractListenerAggregate
         $sharedEventManager = $events->getSharedManager();
 
         $sharedEventManager->attach(
-            'ZfcRbac\Service\AuthorizationService',
+            'ZfcRbac',
             RbacEvent::EVENT_LOAD_ROLES,
             array($this, 'onLoadRoles')
         );
