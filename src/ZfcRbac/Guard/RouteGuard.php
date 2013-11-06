@@ -119,6 +119,11 @@ class RouteGuard extends AbstractGuard
             return $this->protectionPolicy === self::POLICY_DENY ? false : true;
         }
 
+        // The most basic wilcard
+        if (in_array('*', $allowedRoles)) {
+            return true;
+        }
+
         // Lazy load the permission inside the container
         $this->loadRule($allowedRoles, $permission);
 
