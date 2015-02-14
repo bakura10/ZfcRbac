@@ -23,6 +23,7 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\TreeRouteStack;
+use Zend\Session\Container;
 use ZfcRbac\Exception\UnauthorizedException;
 use ZfcRbac\Options\RedirectStrategyOptions;
 use ZfcRbac\View\Strategy\RedirectStrategy;
@@ -35,7 +36,11 @@ class RedirectStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function testAttachToRightEvent()
     {
-        $strategyListener = new RedirectStrategy(new RedirectStrategyOptions(), new AuthenticationService());
+        $strategyListener = new RedirectStrategy(
+            new RedirectStrategyOptions(),
+            new Container(),
+            new AuthenticationService()
+        );
 
         $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
         $eventManager->expects($this->once())
@@ -47,7 +52,12 @@ class RedirectStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testReturnNullIfNotRightException()
     {
-        $redirectStrategy = new RedirectStrategy(new RedirectStrategyOptions(), new AuthenticationService());
+        $redirectStrategy = new RedirectStrategy(
+            new RedirectStrategyOptions(),
+            new Container(),
+            new AuthenticationService()
+        );
+
         $event            = new MvcEvent();
         $event->setParam('exception', new \RuntimeException());
 
@@ -73,13 +83,15 @@ class RedirectStrategyTest extends \PHPUnit_Framework_TestCase
 
         $options = new RedirectStrategyOptions([
             'redirect_to_route_disconnected' => 'login',
-            'append_previous_uri'            => false
+            'save_previous_uri'              => false
         ]);
+
+        $container = new Container();
 
         $authenticationService = $this->getMock('Zend\Authentication\AuthenticationService');
         $authenticationService->expects($this->once())->method('hasIdentity')->will($this->returnValue(false));
 
-        $redirectStrategy = new RedirectStrategy($options, $authenticationService);
+        $redirectStrategy = new RedirectStrategy($options, $container, $authenticationService);
 
         $redirectStrategy->onError($mvcEvent);
 
@@ -107,13 +119,15 @@ class RedirectStrategyTest extends \PHPUnit_Framework_TestCase
 
         $options = new RedirectStrategyOptions([
             'redirect_to_route_connected'    => 'home',
-            'append_previous_uri'            => false
+            'save_previous_uri'              => false
         ]);
+
+        $container = new Container();
 
         $authenticationService = $this->getMock('Zend\Authentication\AuthenticationService');
         $authenticationService->expects($this->once())->method('hasIdentity')->will($this->returnValue(true));
 
-        $redirectStrategy = new RedirectStrategy($options, $authenticationService);
+        $redirectStrategy = new RedirectStrategy($options, $container, $authenticationService);
 
         $redirectStrategy->onError($mvcEvent);
 
@@ -143,17 +157,19 @@ class RedirectStrategyTest extends \PHPUnit_Framework_TestCase
             'redirect_when_connected' => false
         ]);
 
+        $container = new Container();
+
         $authenticationService = $this->getMock('Zend\Authentication\AuthenticationService');
         $authenticationService->expects($this->once())->method('hasIdentity')->will($this->returnValue(true));
 
-        $redirectStrategy = new RedirectStrategy($options, $authenticationService);
+        $redirectStrategy = new RedirectStrategy($options, $container, $authenticationService);
 
         $redirectStrategy->onError($mvcEvent);
 
         $this->assertNotEquals(302, $mvcEvent->getResponse()->getStatusCode());
     }
 
-    public function testCanAppendPreviousUri()
+    public function testCanAddPreviousUriToSession()
     {
         $response = new HttpResponse();
 
@@ -176,22 +192,23 @@ class RedirectStrategyTest extends \PHPUnit_Framework_TestCase
 
         $options = new RedirectStrategyOptions([
             'redirect_to_route_disconnected' => 'login',
-            'append_previous_uri'            => true,
-            'previous_uri_query_key'         => 'redirect-uri'
+            'save_previous_uri'              => true,
+            'previous_uri_session_key'       => 'redirect-uri'
         ]);
+
+        $container = new Container();
 
         $authenticationService = $this->getMock('Zend\Authentication\AuthenticationService');
         $authenticationService->expects($this->once())->method('hasIdentity')->will($this->returnValue(false));
 
-        $redirectStrategy = new RedirectStrategy($options, $authenticationService);
+        $redirectStrategy = new RedirectStrategy($options, $container, $authenticationService);
 
         $redirectStrategy->onError($mvcEvent);
 
         $this->assertInstanceOf('Zend\Stdlib\ResponseInterface', $mvcEvent->getResult());
         $this->assertEquals(302, $mvcEvent->getResponse()->getStatusCode());
-        $this->assertEquals(
-            '/login?redirect-uri=http://example.com/',
-            $mvcEvent->getResponse()->getHeaders()->get('Location')->getFieldValue()
-        );
+        $this->assertEquals('/login', $mvcEvent->getResponse()->getHeaders()->get('Location')->getFieldValue());
+
+        $this->assertEquals('http://example.com/', $container['redirect-uri']);
     }
 }

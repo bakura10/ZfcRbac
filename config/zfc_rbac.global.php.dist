@@ -111,15 +111,15 @@ return [
 
             /**
              * If a user is unauthorized and redirected to another route (login, for instance), should we
-             * append the previous URI (the one that was unauthorized) in the query params?
+             * save the previous URI (the one that was unauthorized) in a session container?
              */
-            // 'append_previous_uri' => true,
+            // 'save_previous_uri' => true,
 
             /**
-             * If append_previous_uri option is set to true, this option set the query key to use when
-             * the previous uri is appended
+             * If save_previous_uri option is set to true, this option set the session key to use when
+             * the previous uri is saved
              */
-            // 'previous_uri_query_key' => 'redirectTo'
+            // 'previous_uri_session_key' => 'redirectTo'
         ],
 
         /**

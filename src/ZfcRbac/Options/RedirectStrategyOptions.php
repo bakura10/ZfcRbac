@@ -54,14 +54,14 @@ class RedirectStrategyOptions extends AbstractOptions
      *
      * @var bool
      */
-    protected $appendPreviousUri = true;
+    protected $savePreviousUri = true;
 
     /**
-     * If appendPreviousUri is enabled, key to use in query params that hold the previous URI
+     * If savePreviousUri is enabled, key to use in session key that hold the previous URI
      *
      * @var string
      */
-    protected $previousUriQueryKey = 'redirectTo';
+    protected $previousUriSessionKey = 'redirectTo';
 
     /**
      * @param bool $redirectWhenConnected
@@ -115,34 +115,34 @@ class RedirectStrategyOptions extends AbstractOptions
     }
 
     /**
-     * @param boolean $appendPreviousUri
+     * @param boolean $savePreviousUri
      */
-    public function setAppendPreviousUri($appendPreviousUri)
+    public function setSavePreviousUri($savePreviousUri)
     {
-        $this->appendPreviousUri = (bool) $appendPreviousUri;
+        $this->savePreviousUri = (bool) $savePreviousUri;
     }
 
     /**
      * @return boolean
      */
-    public function getAppendPreviousUri()
+    public function getSavePreviousUri()
     {
-        return $this->appendPreviousUri;
+        return $this->savePreviousUri;
     }
 
     /**
-     * @param string $previousUriQueryKey
+     * @param string $previousUriSessionKey
      */
-    public function setPreviousUriQueryKey($previousUriQueryKey)
+    public function setPreviousUriSessionKey($previousUriSessionKey)
     {
-        $this->previousUriQueryKey = (string) $previousUriQueryKey;
+        $this->previousUriSessionKey = (string) $previousUriSessionKey;
     }
 
     /**
      * @return string
      */
-    public function getPreviousUriQueryKey()
+    public function getPreviousUriSessionKey()
     {
-        return $this->previousUriQueryKey;
+        return $this->previousUriSessionKey;
     }
 }

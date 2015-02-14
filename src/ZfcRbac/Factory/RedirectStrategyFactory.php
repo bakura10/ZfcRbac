@@ -20,6 +20,7 @@ namespace ZfcRbac\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Session\Container as SessionContainer;
 use ZfcRbac\View\Strategy\RedirectStrategy;
 
 /**
@@ -35,11 +36,15 @@ class RedirectStrategyFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var \ZfcRbac\Options\ModuleOptions $moduleOptions */
+        /** @var \ZfcRbac\Options\ModuleOptions $moduleOptions */
         $moduleOptions = $serviceLocator->get('ZfcRbac\Options\ModuleOptions');
+
+        /** @var SessionContainer $sessionContainer */
+        $sessionContainer = new SessionContainer('zfc_rbac');
+
         /** @var \Zend\Authentication\AuthenticationService $authenticationService */
         $authenticationService = $serviceLocator->get('Zend\Authentication\AuthenticationService');
 
-        return new RedirectStrategy($moduleOptions->getRedirectStrategy(), $authenticationService);
+        return new RedirectStrategy($moduleOptions->getRedirectStrategy(), $sessionContainer, $authenticationService);
     }
 }

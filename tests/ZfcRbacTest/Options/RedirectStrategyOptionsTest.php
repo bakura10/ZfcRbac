@@ -32,8 +32,8 @@ class RedirectStrategyOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($redirectStrategyOptions->getRedirectWhenConnected());
         $this->assertEquals('login', $redirectStrategyOptions->getRedirectToRouteDisconnected());
         $this->assertEquals('home', $redirectStrategyOptions->getRedirectToRouteConnected());
-        $this->assertTrue($redirectStrategyOptions->getAppendPreviousUri());
-        $this->assertEquals('redirectTo', $redirectStrategyOptions->getPreviousUriQueryKey());
+        $this->assertTrue($redirectStrategyOptions->getSavePreviousUri());
+        $this->assertEquals('redirectTo', $redirectStrategyOptions->getPreviousUriSessionKey());
     }
 
     public function testSettersAndGetters()
@@ -42,14 +42,14 @@ class RedirectStrategyOptionsTest extends \PHPUnit_Framework_TestCase
             'redirect_when_connected'        => false,
             'redirect_to_route_connected'    => 'foo',
             'redirect_to_route_disconnected' => 'bar',
-            'append_previous_uri'            => false,
-            'previous_uri_query_key'         => 'redirect-to'
+            'save_previous_uri'              => false,
+            'previous_uri_session_key'       => 'redirect-to'
         ]);
 
         $this->assertFalse($redirectStrategyOptions->getRedirectWhenConnected());
         $this->assertEquals('foo', $redirectStrategyOptions->getRedirectToRouteConnected());
         $this->assertEquals('bar', $redirectStrategyOptions->getRedirectToRouteDisconnected());
-        $this->assertFalse($redirectStrategyOptions->getAppendPreviousUri());
-        $this->assertEquals('redirect-to', $redirectStrategyOptions->getPreviousUriQueryKey());
+        $this->assertFalse($redirectStrategyOptions->getSavePreviousUri());
+        $this->assertEquals('redirect-to', $redirectStrategyOptions->getPreviousUriSessionKey());
     }
 }

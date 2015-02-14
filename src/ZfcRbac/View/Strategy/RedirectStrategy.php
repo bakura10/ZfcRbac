@@ -21,6 +21,7 @@ namespace ZfcRbac\View\Strategy;
 use Zend\Authentication\AuthenticationServiceInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
+use Zend\Session\AbstractContainer;
 use ZfcRbac\Exception\UnauthorizedExceptionInterface;
 use ZfcRbac\Options\RedirectStrategyOptions;
 
@@ -38,6 +39,11 @@ class RedirectStrategy extends AbstractStrategy
     protected $options;
 
     /**
+     * @var AbstractContainer
+     */
+    protected $sessionContainer;
+
+    /**
      * @var AuthenticationServiceInterface
      */
     protected $authenticationService;
@@ -46,11 +52,16 @@ class RedirectStrategy extends AbstractStrategy
      * Constructor
      *
      * @param RedirectStrategyOptions        $options
+     * @param AbstractContainer              $sessionContainer
      * @param AuthenticationServiceInterface $authenticationService
      */
-    public function __construct(RedirectStrategyOptions $options, AuthenticationServiceInterface $authenticationService)
-    {
+    public function __construct(
+        RedirectStrategyOptions $options,
+        AbstractContainer $sessionContainer,
+        AuthenticationServiceInterface $authenticationService
+    ) {
         $this->options               = $options;
+        $this->sessionContainer      = $sessionContainer;
         $this->authenticationService = $authenticationService;
     }
 
@@ -83,17 +94,11 @@ class RedirectStrategy extends AbstractStrategy
 
         $uri = $router->assemble([], ['name' => $redirectRoute]);
 
-        if ($this->options->getAppendPreviousUri()) {
-            $redirectKey = $this->options->getPreviousUriQueryKey();
+        if ($this->options->getSavePreviousUri()) {
+            $redirectKey = $this->options->getPreviousUriSessionKey();
             $previousUri = $event->getRequest()->getUriString();
 
-            $uri = $router->assemble(
-                [],
-                [
-                    'name' => $redirectRoute,
-                    'query' => [$redirectKey => $previousUri]
-                ]
-            );
+            $this->sessionContainer[$redirectKey] = $previousUri;
         }
 
         $response = $event->getResponse() ?: new HttpResponse();
